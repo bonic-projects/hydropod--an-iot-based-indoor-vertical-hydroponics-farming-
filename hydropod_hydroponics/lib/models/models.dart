@@ -1,6 +1,6 @@
 /// Institution model
 class DeviceData {
-  int ph;
+  double ph;
   int waterFLow;
   int totalWaterFlow;
   int waterLevel;

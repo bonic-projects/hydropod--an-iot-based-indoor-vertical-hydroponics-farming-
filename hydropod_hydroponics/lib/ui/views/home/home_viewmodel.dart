@@ -18,8 +18,6 @@ class HomeViewModel extends ReactiveViewModel {
 
   DeviceData? get node => _dbService.node;
 
-  int? get alertValue => _dbService.alertValue;
-
   @override
   List<DbService> get reactiveServices => [_dbService];
 
@@ -33,15 +31,14 @@ class HomeViewModel extends ReactiveViewModel {
     count = 19;
     chartData = <ChartData>[];
     for (int i = 0; i < 19; i++) {
-      chartData!.add(ChartData(i, 1, 1, 1));
+      chartData!.add(ChartData(i, 0));
     }
     timer =
         Timer.periodic(const Duration(milliseconds: 1000), _updateDataSource);
   }
 
   void _updateDataSource(Timer timer) {
-    chartData!.add(ChartData(count, node?.totalWaterFlow ?? 0,
-        node?.waterLevel ?? 0, node?.temp ?? 0));
+    chartData!.add(ChartData(count, node?.totalWaterFlow ?? 0));
     if (chartData!.length == 20) {
       chartData!.removeAt(0);
       chartSeriesController?.updateDataSource(
@@ -68,12 +65,8 @@ class HomeViewModel extends ReactiveViewModel {
 class ChartData {
   ChartData(
     this.time,
-    this.x,
-    this.y,
-    this.z,
+    this.totalWaterFlow,
   );
   final int time;
-  final num x;
-  final num y;
-  final num z;
+  final int totalWaterFlow;
 }
