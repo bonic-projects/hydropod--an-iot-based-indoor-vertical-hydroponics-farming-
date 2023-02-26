@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "193407198246",
+    "firebase_url": "https://hydropod-12ef6-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hydropod-12ef6",
+    "storage_bucket": "hydropod-12ef6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193407198246:android:24af27f0cea9ad1cfe72e7",
+        "android_client_info": {
+          "package_name": "com.autobonics.hydropod_hydroponics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193407198246-0ir35mmpsif8drjh1l4rgnm0b7hpdnbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzt5yHgMvpLuChsBml0qUk0hL32GtJQis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193407198246-0ir35mmpsif8drjh1l4rgnm0b7hpdnbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
