@@ -21,6 +21,11 @@ class HomeViewModel extends ReactiveViewModel {
   @override
   List<DbService> get reactiveServices => [_dbService];
 
+
+  void setServoRotation(int value){
+    _dbService.setDeviceData(value: value);
+  }
+
   //=========Chart============
   Timer? timer;
   List<ChartData>? chartData;

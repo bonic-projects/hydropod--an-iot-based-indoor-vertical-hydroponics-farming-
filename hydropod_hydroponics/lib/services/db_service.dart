@@ -23,4 +23,25 @@ class DbService with ReactiveServiceMixin {
       }
     });
   }
+
+  // Future<DeviceServoData?> getLedData() async {
+  //   DatabaseReference dataRef =
+  //       _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/data');
+  //   final value = await dataRef.once();
+  //   if (value.snapshot.exists) {
+  //     return DeviceServoData.fromMap(value.snapshot.value as Map);
+  //   }
+  //   return null;
+  // }
+
+  void setDeviceData({
+    // required String led, 
+  
+  required int value}) {
+    // log.i("Servo path: ${led} is $value");
+    DatabaseReference dataRef =
+        _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/data');
+    dataRef.set({'servo': value});
+  }
+
 }

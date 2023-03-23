@@ -59,10 +59,21 @@ class _HomeBody extends ViewModelWidget<HomeViewModel> {
               _WaterLevelMeter(value: model.node!.waterLevel),
               _TempMeter(value: model.node!.temp),
               _PhMeter(value: model.node!.ph),
+              _ECMeter(value: model.node!.ec),
               // _WaterLevelMeter(),
               // _RainGageMeter(isRain: true),
               // _RainGageMeter(isRain: false),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+              TextButton(onPressed: (){model.setServoRotation(0);}, child: Text("Rotate to 0")),
+              TextButton(onPressed: (){model.setServoRotation(90);}, child: Text("Rotate to 90")),
+              TextButton(onPressed: (){model.setServoRotation(180);}, child: Text("Rotate to 180")),
+            ],),
           ),
           _GraphPlot(),
         ],
@@ -80,66 +91,75 @@ class _WaterLevelMeter extends ViewModelWidget<HomeViewModel> {
   Widget build(BuildContext context, HomeViewModel model) {
     Widget _buildThermometer(BuildContext context) {
       return Center(
-          child: Padding(
+          child: Column(
+            children: [
+              Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            /// Linear gauge to display celsius scale.
-            SfLinearGauge(
-              minimum: 0,
-              maximum: 1000,
-              interval: 100,
-              minorTicksPerInterval: 0,
-              axisTrackExtent: 23,
-              axisTrackStyle: LinearAxisTrackStyle(
-                  thickness: 12,
-                  color: Colors.white,
-                  borderWidth: 1,
-                  edgeStyle: LinearEdgeStyle.bothCurve),
-              tickPosition: LinearElementPosition.outside,
-              labelPosition: LinearLabelPosition.outside,
-              orientation: LinearGaugeOrientation.vertical,
-              markerPointers: <LinearMarkerPointer>[
-                LinearWidgetPointer(
-                    markerAlignment: LinearMarkerAlignment.end,
-                    value: 1000,
-                    enableAnimation: false,
-                    position: LinearElementPosition.outside,
-                    offset: 8,
-                    child: SizedBox(
-                      height: 30,
-                      child: Text(
-                        'Water',
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    )),
-                LinearShapePointer(
-                  value: 0,
-                  markerAlignment: LinearMarkerAlignment.start,
-                  shapeType: LinearShapePointerType.rectangle,
-                  borderWidth: 1,
-                  color: Colors.blue,
-                  position: LinearElementPosition.cross,
-                  width: 24,
-                  height: 24,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                /// Linear gauge to display celsius scale.
+                SfLinearGauge(
+                  minimum: 0,
+                  maximum: 4095,
+                  interval: 600,
+                  minorTicksPerInterval: 0,
+                  axisTrackExtent: 23,
+                  axisTrackStyle: LinearAxisTrackStyle(
+                      thickness: 12,
+                      color: Colors.white,
+                      borderWidth: 1,
+                      edgeStyle: LinearEdgeStyle.bothCurve),
+                  tickPosition: LinearElementPosition.outside,
+                  labelPosition: LinearLabelPosition.outside,
+                  orientation: LinearGaugeOrientation.vertical,
+                  markerPointers: <LinearMarkerPointer>[
+                    LinearWidgetPointer(
+                        markerAlignment: LinearMarkerAlignment.end,
+                        value: 4095,
+                        enableAnimation: false,
+                        position: LinearElementPosition.outside,
+                        offset: 8,
+                        child: SizedBox(
+                          height: 30,
+                          child: Text(
+                            'Water',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        )),
+                    LinearShapePointer(
+                      value: 0,
+                      markerAlignment: LinearMarkerAlignment.start,
+                      shapeType: LinearShapePointerType.rectangle,
+                      borderWidth: 1,
+                      color: Colors.blue,
+                      position: LinearElementPosition.cross,
+                      width: 24,
+                      height: 24,
+                    ),
+                  ],
+                  barPointers: <LinearBarPointer>[
+                    LinearBarPointer(
+                      value: value.toDouble(),
+                      enableAnimation: false,
+                      thickness: 6,
+                      edgeStyle: LinearEdgeStyle.endCurve,
+                      color: Colors.blue,
+                    )
+                  ],
                 ),
               ],
-              barPointers: <LinearBarPointer>[
-                LinearBarPointer(
-                  value: value.toDouble(),
-                  enableAnimation: false,
-                  thickness: 6,
-                  edgeStyle: LinearEdgeStyle.endCurve,
-                  color: Colors.blue,
-                )
-              ],
-            ),
-          ],
         ),
-      ));
+      ),
+            Card(child: 
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+              child: Text("$value"),
+            ),),
+            ],
+          ));
     }
 
     return _buildThermometer(context);
@@ -156,71 +176,83 @@ class _PhMeter extends ViewModelWidget<HomeViewModel> {
     Widget _buildThermometer(BuildContext context) {
       final Brightness brightness = Theme.of(context).brightness;
       return Center(
-          child: Padding(
+          child: Column(
+            children: [
+              Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            /// Linear gauge to display celsius scale.
-            SfLinearGauge(
-              minimum: 0,
-              maximum: 14,
-              interval: 1,
-              minorTicksPerInterval: 2,
-              axisTrackExtent: 23,
-              axisTrackStyle: LinearAxisTrackStyle(
-                  thickness: 12,
-                  color: Colors.white,
-                  borderWidth: 1,
-                  edgeStyle: LinearEdgeStyle.bothCurve),
-              tickPosition: LinearElementPosition.outside,
-              labelPosition: LinearLabelPosition.outside,
-              orientation: LinearGaugeOrientation.vertical,
-              markerPointers: <LinearMarkerPointer>[
-                LinearWidgetPointer(
-                    markerAlignment: LinearMarkerAlignment.end,
-                    value: 14,
-                    enableAnimation: false,
-                    position: LinearElementPosition.outside,
-                    offset: 8,
-                    child: SizedBox(
-                      height: 30,
-                      child: Text(
-                        'pH',
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    )),
-                LinearShapePointer(
-                  value: 0,
-                  markerAlignment: LinearMarkerAlignment.start,
-                  shapeType: LinearShapePointerType.rectangle,
-                  borderWidth: 1,
-                  color: Colors.deepPurpleAccent,
-                  position: LinearElementPosition.cross,
-                  width: 24,
-                  height: 24,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                /// Linear gauge to display celsius scale.
+                SfLinearGauge(
+                  minimum: 0,
+                  maximum: 14,
+                  interval: 1,
+                  minorTicksPerInterval: 2,
+                  axisTrackExtent: 23,
+                  axisTrackStyle: LinearAxisTrackStyle(
+                      thickness: 12,
+                      color: Colors.white,
+                      borderWidth: 1,
+                      edgeStyle: LinearEdgeStyle.bothCurve),
+                  tickPosition: LinearElementPosition.outside,
+                  labelPosition: LinearLabelPosition.outside,
+                  orientation: LinearGaugeOrientation.vertical,
+                  markerPointers: <LinearMarkerPointer>[
+                    LinearWidgetPointer(
+                        markerAlignment: LinearMarkerAlignment.end,
+                        value: 14,
+                        enableAnimation: false,
+                        position: LinearElementPosition.outside,
+                        offset: 8,
+                        child: SizedBox(
+                          height: 30,
+                          child: Text(
+                            'pH',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        )),
+                    LinearShapePointer(
+                      value: 0,
+                      markerAlignment: LinearMarkerAlignment.start,
+                      shapeType: LinearShapePointerType.rectangle,
+                      borderWidth: 1,
+                      color: Colors.deepPurpleAccent,
+                      position: LinearElementPosition.cross,
+                      width: 24,
+                      height: 24,
+                    ),
+                  ],
+                  barPointers: <LinearBarPointer>[
+                    LinearBarPointer(
+                      value: value,
+                      enableAnimation: false,
+                      thickness: 6,
+                      edgeStyle: LinearEdgeStyle.endCurve,
+                      color: Colors.deepPurpleAccent,
+                    )
+                  ],
                 ),
               ],
-              barPointers: <LinearBarPointer>[
-                LinearBarPointer(
-                  value: value,
-                  enableAnimation: false,
-                  thickness: 6,
-                  edgeStyle: LinearEdgeStyle.endCurve,
-                  color: Colors.deepPurpleAccent,
-                )
-              ],
-            ),
-          ],
         ),
-      ));
+      ),
+           
+           
+             Card(child: 
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+              child: Text("$value"),
+            ),),
+            ],
+          ));
     }
 
     return _buildThermometer(context);
   }
 }
+
 
 class _TempMeter extends ViewModelWidget<HomeViewModel> {
   final double value;
@@ -232,168 +264,307 @@ class _TempMeter extends ViewModelWidget<HomeViewModel> {
     Widget _buildThermometer(BuildContext context) {
       final Brightness brightness = Theme.of(context).brightness;
       return Center(
-          child: Padding(
+          child: Column(
+            children: [
+              Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            /// Linear gauge to display celsius scale.
-            SfLinearGauge(
-              minimum: -20,
-              maximum: 50,
-              interval: 10,
-              minorTicksPerInterval: 2,
-              axisTrackExtent: 23,
-              axisTrackStyle: LinearAxisTrackStyle(
-                  thickness: 12,
-                  color: Colors.white,
-                  borderWidth: 1,
-                  edgeStyle: LinearEdgeStyle.bothCurve),
-              tickPosition: LinearElementPosition.outside,
-              labelPosition: LinearLabelPosition.outside,
-              orientation: LinearGaugeOrientation.vertical,
-              markerPointers: <LinearMarkerPointer>[
-                LinearWidgetPointer(
-                    markerAlignment: LinearMarkerAlignment.end,
-                    value: 50,
-                    enableAnimation: false,
-                    position: LinearElementPosition.outside,
-                    offset: 8,
-                    child: SizedBox(
-                      height: 30,
-                      child: Text(
-                        '°C',
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    )),
-                LinearShapePointer(
-                  value: -20,
-                  markerAlignment: LinearMarkerAlignment.start,
-                  shapeType: LinearShapePointerType.circle,
-                  borderWidth: 1,
-                  borderColor: brightness == Brightness.dark
-                      ? Colors.white30
-                      : Colors.black26,
-                  color: value > 30
-                      ? const Color(0xffFF7B7B)
-                      : const Color(0xff0074E3),
-                  position: LinearElementPosition.cross,
-                  width: 24,
-                  height: 24,
-                ),
-                LinearShapePointer(
-                  value: -20,
-                  markerAlignment: LinearMarkerAlignment.start,
-                  shapeType: LinearShapePointerType.circle,
-                  borderWidth: 6,
-                  borderColor: Colors.transparent,
-                  color: value > 30
-                      ? const Color(0xffFF7B7B)
-                      : const Color(0xff0074E3),
-                  position: LinearElementPosition.cross,
-                  width: 24,
-                  height: 24,
-                ),
-                LinearWidgetPointer(
-                    value: -20,
-                    markerAlignment: LinearMarkerAlignment.start,
-                    child: Container(
-                      width: 10,
-                      height: 3.4,
-                      decoration: BoxDecoration(
-                        border: Border(
-                          left: BorderSide(width: 2.0, color: Colors.black),
-                          right: BorderSide(width: 2.0, color: Colors.black),
-                        ),
-                        color: value > 30
-                            ? const Color(0xffFF7B7B)
-                            : const Color(0xff0074E3),
-                      ),
-                    )),
-                // LinearWidgetPointer(
-                //     value: value,
-                //     enableAnimation: false,
-                //     position: LinearElementPosition.outside,
-                //     // onChanged: (dynamic value) {
-                //     //   setState(() {
-                //     //     _meterValue = value as double;
-                //     //   });
-                //     // },
-                //     child: Container(
-                //         width: 16,
-                //         height: 12,
-                //         transform: Matrix4.translationValues(4, 0, 0.0),
-                //         child: Image.asset(
-                //           'images/triangle_pointer.png',
-                //           color: value > 30
-                //               ? const Color(0xffFF7B7B)
-                //               : const Color(0xff0074E3),
-                //         ))),
-                LinearShapePointer(
-                  value: value,
-                  width: 20,
-                  height: 20,
-                  enableAnimation: false,
-                  color: Colors.transparent,
-                  position: LinearElementPosition.cross,
-                  // onChanged: (dynamic value) {
-                  //   setState(() {
-                  //     _meterValue = value as double;
-                  //   });
-                  // },
-                )
-              ],
-              barPointers: <LinearBarPointer>[
-                LinearBarPointer(
-                  value: value,
-                  enableAnimation: false,
-                  thickness: 6,
-                  edgeStyle: LinearEdgeStyle.endCurve,
-                  color: value > 30
-                      ? const Color(0xffFF7B7B)
-                      : const Color(0xff0074E3),
-                )
-              ],
-            ),
-
-            /// Linear gauge to display Fahrenheit  scale.
-            Container(
-                transform: Matrix4.translationValues(-6, 0, 0.0),
-                child: SfLinearGauge(
-                  maximum: 120,
-                  showAxisTrack: false,
-                  interval: 20,
-                  minorTicksPerInterval: 0,
-                  axisTrackExtent: 24,
-                  axisTrackStyle: const LinearAxisTrackStyle(thickness: 0),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                /// Linear gauge to display celsius scale.
+                SfLinearGauge(
+                  minimum: -20,
+                  maximum: 50,
+                  interval: 10,
+                  minorTicksPerInterval: 2,
+                  axisTrackExtent: 23,
+                  axisTrackStyle: LinearAxisTrackStyle(
+                      thickness: 12,
+                      color: Colors.white,
+                      borderWidth: 1,
+                      edgeStyle: LinearEdgeStyle.bothCurve),
+                  tickPosition: LinearElementPosition.outside,
+                  labelPosition: LinearLabelPosition.outside,
                   orientation: LinearGaugeOrientation.vertical,
                   markerPointers: <LinearMarkerPointer>[
                     LinearWidgetPointer(
                         markerAlignment: LinearMarkerAlignment.end,
-                        value: 120,
-                        position: LinearElementPosition.inside,
-                        offset: 6,
+                        value: 50,
                         enableAnimation: false,
+                        position: LinearElementPosition.outside,
+                        offset: 8,
                         child: SizedBox(
                           height: 30,
                           child: Text(
-                            '°F',
+                            '°C',
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                         )),
+                    LinearShapePointer(
+                      value: -20,
+                      markerAlignment: LinearMarkerAlignment.start,
+                      shapeType: LinearShapePointerType.circle,
+                      borderWidth: 1,
+                      borderColor: brightness == Brightness.dark
+                          ? Colors.white30
+                          : Colors.black26,
+                      color: value > 30
+                          ? const Color(0xffFF7B7B)
+                          : const Color(0xff0074E3),
+                      position: LinearElementPosition.cross,
+                      width: 24,
+                      height: 24,
+                    ),
+                    LinearShapePointer(
+                      value: -20,
+                      markerAlignment: LinearMarkerAlignment.start,
+                      shapeType: LinearShapePointerType.circle,
+                      borderWidth: 6,
+                      borderColor: Colors.transparent,
+                      color: value > 30
+                          ? const Color(0xffFF7B7B)
+                          : const Color(0xff0074E3),
+                      position: LinearElementPosition.cross,
+                      width: 24,
+                      height: 24,
+                    ),
+                    LinearWidgetPointer(
+                        value: -20,
+                        markerAlignment: LinearMarkerAlignment.start,
+                        child: Container(
+                          width: 10,
+                          height: 3.4,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              left: BorderSide(width: 2.0, color: Colors.black),
+                              right: BorderSide(width: 2.0, color: Colors.black),
+                            ),
+                            color: value > 30
+                                ? const Color(0xffFF7B7B)
+                                : const Color(0xff0074E3),
+                          ),
+                        )),
+                    // LinearWidgetPointer(
+                    //     value: value,
+                    //     enableAnimation: false,
+                    //     position: LinearElementPosition.outside,
+                    //     // onChanged: (dynamic value) {
+                    //     //   setState(() {
+                    //     //     _meterValue = value as double;
+                    //     //   });
+                    //     // },
+                    //     child: Container(
+                    //         width: 16,
+                    //         height: 12,
+                    //         transform: Matrix4.translationValues(4, 0, 0.0),
+                    //         child: Image.asset(
+                    //           'images/triangle_pointer.png',
+                    //           color: value > 30
+                    //               ? const Color(0xffFF7B7B)
+                    //               : const Color(0xff0074E3),
+                    //         ))),
+                    LinearShapePointer(
+                      value: value,
+                      width: 20,
+                      height: 20,
+                      enableAnimation: false,
+                      color: Colors.transparent,
+                      position: LinearElementPosition.cross,
+                      // onChanged: (dynamic value) {
+                      //   setState(() {
+                      //     _meterValue = value as double;
+                      //   });
+                      // },
+                    )
                   ],
-                ))
-          ],
+                  barPointers: <LinearBarPointer>[
+                    LinearBarPointer(
+                      value: value,
+                      enableAnimation: false,
+                      thickness: 6,
+                      edgeStyle: LinearEdgeStyle.endCurve,
+                      color: value > 30
+                          ? const Color(0xffFF7B7B)
+                          : const Color(0xff0074E3),
+                    )
+                  ],
+                ),
+              ],
         ),
-      ));
+      ),
+            
+          Card(child: 
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+              child: Text("$value"),
+            ),),
+            ],
+          ));
     }
 
     return _buildThermometer(context);
   }
 }
+
+
+class _ECMeter extends ViewModelWidget<HomeViewModel> {
+  final double value;
+  const _ECMeter({required this.value, Key? key})
+      : super(key: key, reactive: true);
+
+  @override
+  Widget build(BuildContext context, HomeViewModel model) {
+    Widget _buildThermometer(BuildContext context) {
+      final Brightness brightness = Theme.of(context).brightness;
+      return Center(
+          child: Column(
+            children: [
+              Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                /// Linear gauge to display celsius scale.
+                SfLinearGauge(
+                  minimum: .5,
+                  maximum: 3,
+                  interval: .5,
+                  minorTicksPerInterval: 2,
+                  axisTrackExtent: 23,
+                  axisTrackStyle: LinearAxisTrackStyle(
+                      thickness: 12,
+                      color: Colors.white,
+                      borderWidth: 1,
+                      edgeStyle: LinearEdgeStyle.bothCurve),
+                  tickPosition: LinearElementPosition.outside,
+                  labelPosition: LinearLabelPosition.outside,
+                  orientation: LinearGaugeOrientation.vertical,
+                  markerPointers: <LinearMarkerPointer>[
+                    LinearWidgetPointer(
+                        markerAlignment: LinearMarkerAlignment.end,
+                        value: 3,
+                        enableAnimation: false,
+                        position: LinearElementPosition.outside,
+                        offset: 8,
+                        child: SizedBox(
+                          height: 30,
+                          child: Text(
+                            'EC',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        )),
+                    LinearShapePointer(
+                      value: -20,
+                      markerAlignment: LinearMarkerAlignment.start,
+                      shapeType: LinearShapePointerType.circle,
+                      borderWidth: 1,
+                      borderColor: brightness == Brightness.dark
+                          ? Colors.white30
+                          : Colors.black26,
+                      color: value > 30
+                          ? const Color(0xffFF7B7B)
+                          : const Color(0xff0074E3),
+                      position: LinearElementPosition.cross,
+                      width: 24,
+                      height: 24,
+                    ),
+                    LinearShapePointer(
+                      value: -20,
+                      markerAlignment: LinearMarkerAlignment.start,
+                      shapeType: LinearShapePointerType.circle,
+                      borderWidth: 6,
+                      borderColor: Colors.transparent,
+                      color: value > 30
+                          ? const Color(0xffFF7B7B)
+                          : const Color(0xff0074E3),
+                      position: LinearElementPosition.cross,
+                      width: 24,
+                      height: 24,
+                    ),
+                    LinearWidgetPointer(
+                        value: -20,
+                        markerAlignment: LinearMarkerAlignment.start,
+                        child: Container(
+                          width: 10,
+                          height: 3.4,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              left: BorderSide(width: 2.0, color: Colors.black),
+                              right: BorderSide(width: 2.0, color: Colors.black),
+                            ),
+                            color: value > 30
+                                ? const Color(0xffFF7B7B)
+                                : const Color(0xff0074E3),
+                          ),
+                        )),
+                    // LinearWidgetPointer(
+                    //     value: value,
+                    //     enableAnimation: false,
+                    //     position: LinearElementPosition.outside,
+                    //     // onChanged: (dynamic value) {
+                    //     //   setState(() {
+                    //     //     _meterValue = value as double;
+                    //     //   });
+                    //     // },
+                    //     child: Container(
+                    //         width: 16,
+                    //         height: 12,
+                    //         transform: Matrix4.translationValues(4, 0, 0.0),
+                    //         child: Image.asset(
+                    //           'images/triangle_pointer.png',
+                    //           color: value > 30
+                    //               ? const Color(0xffFF7B7B)
+                    //               : const Color(0xff0074E3),
+                    //         ))),
+                    LinearShapePointer(
+                      value: value,
+                      width: 20,
+                      height: 20,
+                      enableAnimation: false,
+                      color: Colors.transparent,
+                      position: LinearElementPosition.cross,
+                      // onChanged: (dynamic value) {
+                      //   setState(() {
+                      //     _meterValue = value as double;
+                      //   });
+                      // },
+                    )
+                  ],
+                  barPointers: <LinearBarPointer>[
+                    LinearBarPointer(
+                      value: value,
+                      enableAnimation: false,
+                      thickness: 6,
+                      edgeStyle: LinearEdgeStyle.endCurve,
+                      color: value > 30
+                          ? const Color(0xffFF7B7B)
+                          : const Color(0xff0074E3),
+                    )
+                  ],
+                ),
+
+ 
+              ],
+        ),
+      ),
+            
+          Card(child: 
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+              child: Text("$value"),
+            ),),
+            ],
+          ));
+    }
+
+    return _buildThermometer(context);
+  }
+}
+
 
 // class _RainGageMeter extends ViewModelWidget<HomeViewModel> {
 //   const _RainGageMeter({Key? key})

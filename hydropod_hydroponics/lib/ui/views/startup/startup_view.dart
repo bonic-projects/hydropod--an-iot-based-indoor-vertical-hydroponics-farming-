@@ -18,7 +18,7 @@ class StartupView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                'assets/icon.png',
+                'assets/splash.png',
                 height: 250,
               )
             ],
