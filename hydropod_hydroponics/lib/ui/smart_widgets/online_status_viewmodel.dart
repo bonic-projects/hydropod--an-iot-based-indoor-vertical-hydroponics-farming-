@@ -12,7 +12,7 @@ class HomeViewModel extends BaseViewModel {
 
   final _dbService = locator<DbService>();
 
-  DeviceData? get node => _dbService.node;
+  DeviceReading? get node => _dbService.node;
 
   bool _isOnline = false;
   bool get isOnline => _isOnline;

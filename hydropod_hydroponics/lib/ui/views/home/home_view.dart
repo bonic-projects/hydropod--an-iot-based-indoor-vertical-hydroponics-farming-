@@ -52,7 +52,50 @@ class _HomeBody extends ViewModelWidget<HomeViewModel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // _Alert(),
+          _StepperButton(
+            text: "Rotate plants",
+            icon: Icons.rotate_90_degrees_cw,
+            onTap: model.setStepper,
+          ),
+          _OtherButtons(
+            text1: "Move sensors down",
+            text2: "Move sensors up",
+            icon1: Icons.arrow_downward,
+            icon2: Icons.arrow_upward,
+            isTrue: model.deviceData.servo == model.servoMin,
+            onTap: model.setServoRotation,
+          ),
+          _OtherButtons(
+            text1: "Read sensor data",
+            text2: "Stop reading sensor",
+            icon1: Icons.play_circle,
+            icon2: Icons.stop_circle,
+            isTrue: !model.deviceData.isReadSensor,
+            onTap: model.setIsReadSensor,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _ConditionButton(
+                text1: "Light ON",
+                text2: "Light OFF",
+                isTrue: model.deviceData.r2,
+                onTap: model.setR2,
+              ),
+              _ConditionButton(
+                text1: "Pump ON",
+                text2: "Pump OFF",
+                isTrue: model.deviceData.r1,
+                onTap: model.setR1,
+              ),
+              _ConditionButton(
+                text1: "Fan ON",
+                text2: "Fan OFF",
+                isTrue: model.deviceData.r3,
+                onTap: model.setR3,
+              ),
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -65,20 +108,165 @@ class _HomeBody extends ViewModelWidget<HomeViewModel> {
               // _RainGageMeter(isRain: false),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-              TextButton(onPressed: (){model.setServoRotation(0);}, child: Text("Rotate to 0")),
-              TextButton(onPressed: (){model.setServoRotation(90);}, child: Text("Rotate to 90")),
-              TextButton(onPressed: (){model.setServoRotation(180);}, child: Text("Rotate to 180")),
-            ],),
-          ),
           _GraphPlot(),
         ],
       ),
     );
+  }
+}
+
+class _StepperButton extends ViewModelWidget<HomeViewModel> {
+  final String text;
+  final IconData icon;
+  final VoidCallback onTap;
+  const _StepperButton({
+    required this.text,
+    required this.icon,
+    required this.onTap,
+    Key? key,
+  }) : super(key: key, reactive: true);
+
+  @override
+  Widget build(BuildContext context, HomeViewModel model) {
+    Widget _buildThermometer(BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.teal,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text(text), Icon(icon)],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return _buildThermometer(context);
+  }
+}
+
+class _OtherButtons extends ViewModelWidget<HomeViewModel> {
+  final String text1;
+  final String text2;
+  final IconData icon1;
+  final IconData icon2;
+  final bool isTrue;
+  final VoidCallback onTap;
+  const _OtherButtons({
+    required this.text1,
+    required this.text2,
+    required this.icon1,
+    required this.icon2,
+    required this.isTrue,
+    required this.onTap,
+    Key? key,
+  }) : super(key: key, reactive: true);
+
+  @override
+  Widget build(BuildContext context, HomeViewModel model) {
+    Widget _buildThermometer(BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: isTrue ? Colors.teal : Colors.teal,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(isTrue ? text1 : text2),
+                    Icon(isTrue ? icon1 : icon2)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return _buildThermometer(context);
+  }
+}
+
+class _ConditionButton extends ViewModelWidget<HomeViewModel> {
+  final String text1;
+  final String text2;
+  final bool isTrue;
+  final VoidCallback onTap;
+  const _ConditionButton({
+    required this.text1,
+    required this.text2,
+    required this.isTrue,
+    required this.onTap,
+    Key? key,
+  }) : super(key: key, reactive: true);
+
+  @override
+  Widget build(BuildContext context, HomeViewModel model) {
+    Widget _buildThermometer(BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: isTrue ? Colors.red : Colors.green,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(isTrue ? text1 : text2),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return _buildThermometer(context);
   }
 }
 
@@ -92,10 +280,10 @@ class _WaterLevelMeter extends ViewModelWidget<HomeViewModel> {
     Widget _buildThermometer(BuildContext context) {
       return Center(
           child: Column(
-            children: [
-              Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -151,15 +339,17 @@ class _WaterLevelMeter extends ViewModelWidget<HomeViewModel> {
                   ],
                 ),
               ],
-        ),
-      ),
-            Card(child: 
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
               child: Text("$value"),
-            ),),
-            ],
-          ));
+            ),
+          ),
+        ],
+      ));
     }
 
     return _buildThermometer(context);
@@ -177,10 +367,10 @@ class _PhMeter extends ViewModelWidget<HomeViewModel> {
       final Brightness brightness = Theme.of(context).brightness;
       return Center(
           child: Column(
-            children: [
-              Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -236,23 +426,22 @@ class _PhMeter extends ViewModelWidget<HomeViewModel> {
                   ],
                 ),
               ],
-        ),
-      ),
-           
-           
-             Card(child: 
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
               child: Text("$value"),
-            ),),
-            ],
-          ));
+            ),
+          ),
+        ],
+      ));
     }
 
     return _buildThermometer(context);
   }
 }
-
 
 class _TempMeter extends ViewModelWidget<HomeViewModel> {
   final double value;
@@ -265,10 +454,10 @@ class _TempMeter extends ViewModelWidget<HomeViewModel> {
       final Brightness brightness = Theme.of(context).brightness;
       return Center(
           child: Column(
-            children: [
-              Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -339,7 +528,8 @@ class _TempMeter extends ViewModelWidget<HomeViewModel> {
                           decoration: BoxDecoration(
                             border: Border(
                               left: BorderSide(width: 2.0, color: Colors.black),
-                              right: BorderSide(width: 2.0, color: Colors.black),
+                              right:
+                                  BorderSide(width: 2.0, color: Colors.black),
                             ),
                             color: value > 30
                                 ? const Color(0xffFF7B7B)
@@ -392,22 +582,22 @@ class _TempMeter extends ViewModelWidget<HomeViewModel> {
                   ],
                 ),
               ],
-        ),
-      ),
-            
-          Card(child: 
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
               child: Text("$value"),
-            ),),
-            ],
-          ));
+            ),
+          ),
+        ],
+      ));
     }
 
     return _buildThermometer(context);
   }
 }
-
 
 class _ECMeter extends ViewModelWidget<HomeViewModel> {
   final double value;
@@ -420,10 +610,10 @@ class _ECMeter extends ViewModelWidget<HomeViewModel> {
       final Brightness brightness = Theme.of(context).brightness;
       return Center(
           child: Column(
-            children: [
-              Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -494,7 +684,8 @@ class _ECMeter extends ViewModelWidget<HomeViewModel> {
                           decoration: BoxDecoration(
                             border: Border(
                               left: BorderSide(width: 2.0, color: Colors.black),
-                              right: BorderSide(width: 2.0, color: Colors.black),
+                              right:
+                                  BorderSide(width: 2.0, color: Colors.black),
                             ),
                             color: value > 30
                                 ? const Color(0xffFF7B7B)
@@ -546,25 +737,23 @@ class _ECMeter extends ViewModelWidget<HomeViewModel> {
                     )
                   ],
                 ),
-
- 
               ],
-        ),
-      ),
-            
-          Card(child: 
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
               child: Text("$value"),
-            ),),
-            ],
-          ));
+            ),
+          ),
+        ],
+      ));
     }
 
     return _buildThermometer(context);
   }
 }
-
 
 // class _RainGageMeter extends ViewModelWidget<HomeViewModel> {
 //   const _RainGageMeter({Key? key})

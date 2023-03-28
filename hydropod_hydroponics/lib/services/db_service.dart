@@ -9,39 +9,34 @@ class DbService with ReactiveServiceMixin {
 
   FirebaseDatabase _db = FirebaseDatabase.instance;
 
-  DeviceData? _node;
-  DeviceData? get node => _node;
+  DeviceReading? _node;
+  DeviceReading? get node => _node;
 
   void setupNodeListening() {
     DatabaseReference starCountRef =
         _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/reading');
     starCountRef.onValue.listen((DatabaseEvent event) {
       if (event.snapshot.exists) {
-        _node = DeviceData.fromMap(event.snapshot.value as Map);
+        _node = DeviceReading.fromMap(event.snapshot.value as Map);
         // log.v(_node?.lastSeen); //data['time']
         notifyListeners();
       }
     });
   }
 
-  // Future<DeviceServoData?> getLedData() async {
-  //   DatabaseReference dataRef =
-  //       _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/data');
-  //   final value = await dataRef.once();
-  //   if (value.snapshot.exists) {
-  //     return DeviceServoData.fromMap(value.snapshot.value as Map);
-  //   }
-  //   return null;
-  // }
-
-  void setDeviceData({
-    // required String led, 
-  
-  required int value}) {
-    // log.i("Servo path: ${led} is $value");
+  Future<DeviceData?> getDeviceData() async {
     DatabaseReference dataRef =
         _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/data');
-    dataRef.set({'servo': value});
+    final value = await dataRef.once();
+    if (value.snapshot.exists) {
+      return DeviceData.fromMap(value.snapshot.value as Map);
+    }
+    return null;
   }
 
+  void setDeviceData(DeviceData data) {
+    DatabaseReference dataRef =
+        _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/data');
+    dataRef.update(data.toJson());
+  }
 }

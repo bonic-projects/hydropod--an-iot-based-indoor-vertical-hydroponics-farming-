@@ -16,14 +16,88 @@ class HomeViewModel extends ReactiveViewModel {
   // final _navigationService = locator<NavigationService>();
   final _dbService = locator<DbService>();
 
-  DeviceData? get node => _dbService.node;
+  DeviceReading? get node => _dbService.node;
 
   @override
   List<DbService> get reactiveServices => [_dbService];
 
+  //Device data
+  int servoMin = 40;
+  int servoMax = 130;
+  int stepperStep = 2;
+  late DeviceData _deviceData;
+  DeviceData get deviceData => _deviceData;
 
-  void setServoRotation(int value){
-    _dbService.setDeviceData(value: value);
+  void setDeviceData() {
+    _dbService.setDeviceData(_deviceData);
+  }
+
+  void getDeviceData() async {
+    setBusy(true);
+    DeviceData? deviceData = await _dbService.getDeviceData();
+    if (deviceData != null) {
+      _deviceData = DeviceData(
+        servo: deviceData.servo,
+        stepper: deviceData.stepper,
+        isReadSensor: deviceData.isReadSensor,
+        r1: deviceData.r1,
+        r2: deviceData.r2,
+        r3: deviceData.r3,
+        r4: deviceData.r4,
+      );
+    } else {
+      _deviceData = DeviceData(
+          servo: servoMin,
+          stepper: stepperStep,
+          isReadSensor: false,
+          r1: false,
+          r2: false,
+          r3: false,
+          r4: false);
+    }
+    setBusy(false);
+  }
+
+  void setServoRotation() {
+    _deviceData.servo = _deviceData.servo == servoMin ? servoMax : servoMin;
+    notifyListeners();
+    setDeviceData();
+  }
+
+  void setStepper() {
+    _deviceData.stepper = _deviceData.stepper + stepperStep;
+    notifyListeners();
+    setDeviceData();
+  }
+
+  void setIsReadSensor() {
+    _deviceData.isReadSensor = !_deviceData.isReadSensor;
+    notifyListeners();
+    setDeviceData();
+  }
+
+  void setR1() {
+    _deviceData.r1 = !_deviceData.r1;
+    notifyListeners();
+    setDeviceData();
+  }
+
+  void setR2() {
+    _deviceData.r2 = !_deviceData.r2;
+    notifyListeners();
+    setDeviceData();
+  }
+
+  void setR3() {
+    _deviceData.r3 = !_deviceData.r3;
+    notifyListeners();
+    setDeviceData();
+  }
+
+  void setR4() {
+    _deviceData.r4 = !_deviceData.r4;
+    notifyListeners();
+    setDeviceData();
   }
 
   //=========Chart============
@@ -33,6 +107,7 @@ class HomeViewModel extends ReactiveViewModel {
   ChartSeriesController? chartSeriesController;
 
   void onModelReady() {
+    getDeviceData();
     count = 19;
     chartData = <ChartData>[];
     for (int i = 0; i < 19; i++) {
