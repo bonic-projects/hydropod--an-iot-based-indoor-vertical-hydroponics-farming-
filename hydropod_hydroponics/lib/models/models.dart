@@ -1,7 +1,7 @@
 /// Device Sensor Reading model
 class DeviceReading {
   double ph;
-  int waterFLow;
+  double waterFLow;
   int totalWaterFlow;
   int waterLevel;
   double temp;
@@ -23,7 +23,11 @@ class DeviceReading {
       ph: data['ph'] != null
           ? (data['ph'] % 1 == 0 ? data['ph'] + 0.1 : data['ph'])
           : 0.0,
-      waterFLow: data['flowRate'] ?? 0,
+      waterFLow: data['flowRate'] != null
+          ? (data['flowRate'] % 1 == 0
+              ? data['flowRate'] + 0.1
+              : data['flowRate'])
+          : 0.0,
       totalWaterFlow: data['totalMilliLitres'] ?? 0,
       waterLevel: data['wtr_level'] ?? 0,
       temp: data['temp'] != null
@@ -37,7 +41,7 @@ class DeviceReading {
   }
 }
 
-/// Device Sensor Reading model
+/// Device control model
 class DeviceData {
   int servo;
   int stepper;

@@ -15,9 +15,18 @@ class IsOnlineWidget extends StatelessWidget {
           return Center(
               child: Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: Text(
-              'Online',
-              style: TextStyle(color: Colors.white70),
+            child: Row(
+              children: [
+                Text(
+                  'Online',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                Icon(
+                  Icons.circle,
+                  color: Colors.green,
+                  size: 16,
+                )
+              ],
             ),
           ));
         else
@@ -31,17 +40,6 @@ class IsOnlineWidget extends StatelessWidget {
           ));
       },
       viewModelBuilder: () => HomeViewModel(),
-    );
-  }
-}
-
-class _HomeBody extends ViewModelWidget<HomeViewModel> {
-  const _HomeBody({Key? key}) : super(key: key, reactive: true);
-
-  @override
-  Widget build(BuildContext context, HomeViewModel model) {
-    return Column(
-      children: [],
     );
   }
 }

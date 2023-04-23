@@ -22,10 +22,17 @@ class HomeViewModel extends ReactiveViewModel {
   List<DbService> get reactiveServices => [_dbService];
 
   //Device data
-  int servoMin = 40;
-  int servoMax = 130;
+  int servoMin = 25;
+  int servoMax = 145;
   int stepperStep = 2;
-  late DeviceData _deviceData;
+  DeviceData _deviceData = DeviceData(
+      servo: 0,
+      stepper: 0,
+      isReadSensor: false,
+      r1: false,
+      r2: false,
+      r3: false,
+      r4: false);
   DeviceData get deviceData => _deviceData;
 
   void setDeviceData() {

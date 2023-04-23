@@ -1,68 +1,17 @@
-//PH sensor
-#define phPin 33
-int phValue = 0;
-float phReading = 0;
-
-//Temperature sensor
-#include <OneWire.h>
-#include <DallasTemperature.h>
-// // GPIO where the DS18B20 is connected to
-const int oneWireBus = 15;          
-// Setup a oneWire instance to communicate with any OneWire devices
-OneWire oneWire(oneWireBus);
-// Pass our oneWire reference to Dallas Temperature sensor
-DallasTemperature tempSensor(&oneWire);
-// // Temperature value
-float temperature;
-
-//EC sensor
-// #include <Adafruit_ADS1015.h>
-#include <DFRobot_ESP_EC.h>
-//Pin
-#define ecPin 32
-DFRobot_ESP_EC ec;
-// Adafruit_ADS1115 ads;
-float ecVoltage, ecValue = 0;
-
-//Water level sensor
-#define wtrLvlPin 34
-int waterLvlValue = 0;
-
-//Warer flow
-#define wtr_flow  35
-long currentMillis = 0;
-long previousMillis = 0;
-int interval = 1000;
-boolean ledState = LOW;
-float calibrationFactor = 4.5;
-volatile byte pulseCount;
-byte pulse1Sec = 0;
-float flowRate;
-unsigned int flowMilliLitres;
-unsigned long totalMilliLitres;
-// void IRAM_ATTR pulseCounter() {
-//   pulseCount++;
-// }
-
-//Power meter
-// #include "ZMPT101B.h"
-// #include "EmonLib.h"
-// EnergyMonitor emon;
-// #define vCalibration 106.8
-// #define currCalibration 0.52
-// float kWh = 0;
-// unsigned long lastmillis = millis();
-
 //Servo
 #include <Servo.h>
 Servo myservo;  // create servo object to control a servo
-#define servoPin 18
+#define servoPin 13
+#define servoPin 26
+#define servoPin 25
 int pos = 0;    // variable to store the servo position
 
 //Stepper
+#include <AccelStepper.h>
 const int DIR = 12;
 const int STEP = 14;
-const int  steps_per_rev = 200;
+#define motorInterfaceType 1
+AccelStepper motor(motorInterfaceType, STEP, DIR);
 
 //Relays
 #define relay1  19
@@ -151,8 +100,8 @@ void streamCallback(StreamData data)
   {
     Serial.println("Success data stepperFb");
     int value = stepperFb.to<int>();   
-    // motor.moveTo(value);
-    // motor.run();
+    motor.moveTo(4);
+    motor.run();
   }  
   if (isReadSensorFb.success)
   {
@@ -243,10 +192,11 @@ void setup() {
   //Servo
   myservo.attach(servoPin);  // attaches the servo on pin 13 to the servo objec/t
 
-
   //Stepper
-  pinMode(STEP, OUTPUT);
-  pinMode(DIR, OUTPUT);
+  motor.setMaxSpeed(1000);
+  motor.setAcceleration(110);
+  motor.setSpeed(200);
+  // motor.moveTo(10);
 
   //Water flow
   pinMode(wtr_flow, INPUT_PULLUP);
