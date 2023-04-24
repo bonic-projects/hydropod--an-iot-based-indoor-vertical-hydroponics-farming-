@@ -52,9 +52,25 @@ class _HomeBody extends ViewModelWidget<HomeViewModel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _StepperButton(
-            text: "Rotate plants",
-            icon: Icons.rotate_90_degrees_cw,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: _OtherButtons(
+                text1: "Plant condition good",
+                text2: "Plant condition bad",
+                icon1: Icons.done,
+                icon2: Icons.close,
+                isTrue: model.node!.condition,
+                onTap: model.setCondition,
+              ),
+            ),
+          ),
+          _OtherButtons(
+            text1: "Rotate plants",
+            text2: "Stop rotation",
+            icon1: Icons.play_circle,
+            icon2: Icons.stop_circle,
+            isTrue: model.deviceData.stepper,
             onTap: model.setStepper,
           ),
           _OtherButtons(
@@ -112,55 +128,6 @@ class _HomeBody extends ViewModelWidget<HomeViewModel> {
         ],
       ),
     );
-  }
-}
-
-class _StepperButton extends ViewModelWidget<HomeViewModel> {
-  final String text;
-  final IconData icon;
-  final VoidCallback onTap;
-  const _StepperButton({
-    required this.text,
-    required this.icon,
-    required this.onTap,
-    Key? key,
-  }) : super(key: key, reactive: true);
-
-  @override
-  Widget build(BuildContext context, HomeViewModel model) {
-    Widget _buildThermometer(BuildContext context) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.teal,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                offset: Offset(0.0, 1.0), //(x,y)
-                blurRadius: 6.0,
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: onTap,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text(text), Icon(icon)],
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return _buildThermometer(context);
   }
 }
 

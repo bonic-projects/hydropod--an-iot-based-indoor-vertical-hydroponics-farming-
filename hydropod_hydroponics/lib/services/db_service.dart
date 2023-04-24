@@ -39,4 +39,10 @@ class DbService with ReactiveServiceMixin {
         _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/data');
     dataRef.update(data.toJson());
   }
+
+  void setCondition(bool condition) {
+    DatabaseReference dataRef =
+        _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/reading');
+    dataRef.update({"condition": condition});
+  }
 }

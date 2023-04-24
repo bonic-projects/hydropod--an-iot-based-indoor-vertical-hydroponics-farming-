@@ -24,10 +24,9 @@ class HomeViewModel extends ReactiveViewModel {
   //Device data
   int servoMin = 25;
   int servoMax = 145;
-  int stepperStep = 2;
   DeviceData _deviceData = DeviceData(
       servo: 0,
-      stepper: 0,
+      stepper: false,
       isReadSensor: false,
       r1: false,
       r2: false,
@@ -55,7 +54,7 @@ class HomeViewModel extends ReactiveViewModel {
     } else {
       _deviceData = DeviceData(
           servo: servoMin,
-          stepper: stepperStep,
+          stepper: false,
           isReadSensor: false,
           r1: false,
           r2: false,
@@ -65,6 +64,11 @@ class HomeViewModel extends ReactiveViewModel {
     setBusy(false);
   }
 
+  void setCondition() {
+    _dbService.setCondition(!node!.condition);
+    notifyListeners();
+  }
+
   void setServoRotation() {
     _deviceData.servo = _deviceData.servo == servoMin ? servoMax : servoMin;
     notifyListeners();
@@ -72,7 +76,7 @@ class HomeViewModel extends ReactiveViewModel {
   }
 
   void setStepper() {
-    _deviceData.stepper = _deviceData.stepper + stepperStep;
+    _deviceData.stepper = !_deviceData.stepper;
     notifyListeners();
     setDeviceData();
   }

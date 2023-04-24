@@ -22,7 +22,7 @@ class HomeViewModel extends BaseViewModel {
     final DateTime now = DateTime.now();
     final difference = now.difference(time).inSeconds;
     // log.i("Status $difference");
-    return difference >= 0 && difference <= 4;
+    return difference >= 0 && difference <= 5;
   }
 
   late Timer timer;

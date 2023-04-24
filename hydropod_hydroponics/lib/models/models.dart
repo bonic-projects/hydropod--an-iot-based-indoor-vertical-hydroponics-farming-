@@ -6,6 +6,7 @@ class DeviceReading {
   int waterLevel;
   double temp;
   double ec;
+  bool condition;
   DateTime lastSeen;
 
   DeviceReading({
@@ -16,6 +17,7 @@ class DeviceReading {
     required this.temp,
     required this.lastSeen,
     required this.ec,
+    required this.condition,
   });
 
   factory DeviceReading.fromMap(Map data) {
@@ -37,6 +39,7 @@ class DeviceReading {
           ? (data['ec'] % 1 == 0 ? data['ec'] + 0.1 : data['ec'])
           : 0.0,
       lastSeen: DateTime.fromMillisecondsSinceEpoch(data['ts']),
+      condition: data["condition"] ?? false,
     );
   }
 }
@@ -44,7 +47,7 @@ class DeviceReading {
 /// Device control model
 class DeviceData {
   int servo;
-  int stepper;
+  bool stepper;
   bool isReadSensor;
   bool r1;
   bool r2;
@@ -64,7 +67,7 @@ class DeviceData {
   factory DeviceData.fromMap(Map data) {
     return DeviceData(
       servo: data['servo'] != null ? data['servo'] : 0,
-      stepper: data['stepper'] != null ? data['stepper'] : 0,
+      stepper: data['stepper'] != null ? data['stepper'] : false,
       isReadSensor: data['isReadSensor'] ?? false,
       r1: data['r1'] ?? false,
       r2: data['r2'] ?? false,
