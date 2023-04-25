@@ -19,6 +19,7 @@ header = ['ph', 'temp', 'ec', 'water_level', 'condition']
 conditionIn = False
 # Listen to the database changes
 def on_data_change(event):
+    print("New data")
     global conditionIn
     data = event.data
     if(data.get('condition')!=None):
@@ -28,6 +29,5 @@ def on_data_change(event):
         with open(csv_file, mode='a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(row)
-            print('Data saved to CSV:', row)
-
+        print('Data saved to CSV:', row)
 ref.listen(on_data_change)
