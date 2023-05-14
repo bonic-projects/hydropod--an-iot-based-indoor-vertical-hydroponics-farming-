@@ -6,6 +6,7 @@ class DeviceReading {
   int waterLevel;
   double temp;
   double ec;
+  bool ir;
   bool condition;
   DateTime lastSeen;
 
@@ -18,6 +19,7 @@ class DeviceReading {
     required this.lastSeen,
     required this.ec,
     required this.condition,
+    required this.ir,
   });
 
   factory DeviceReading.fromMap(Map data) {
@@ -40,6 +42,24 @@ class DeviceReading {
           : 0.0,
       lastSeen: DateTime.fromMillisecondsSinceEpoch(data['ts']),
       condition: data["condition"] ?? false,
+      ir: data["ir"] ?? false,
+    );
+  }
+}
+
+class DeviceData2 {
+  bool condition;
+  DateTime lastSeen;
+
+  DeviceData2({
+    required this.condition,
+    required this.lastSeen,
+  });
+
+  factory DeviceData2.fromMap(Map data) {
+    return DeviceData2(
+      condition: data["condition"] ?? false,
+      lastSeen: DateTime.fromMillisecondsSinceEpoch(data['ts']),
     );
   }
 }
@@ -86,3 +106,6 @@ class DeviceData {
         'r4': r4,
       };
 }
+
+const int servoMin = 25;
+const int servoMax = 145;

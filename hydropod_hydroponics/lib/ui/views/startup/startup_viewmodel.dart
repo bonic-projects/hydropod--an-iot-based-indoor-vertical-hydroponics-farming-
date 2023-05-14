@@ -15,6 +15,7 @@ class StartupViewModel extends BaseViewModel {
   void handleStartupLogic() async {
     log.i('Startup');
     _dbService.setupNodeListening();
+    _dbService.setupNode2Listening();
     // _dbService.setupAlertListening();
     // _baseService.setCurrentRoute(Routes.startUpView);
     await Future.delayed(const Duration(milliseconds: 800));

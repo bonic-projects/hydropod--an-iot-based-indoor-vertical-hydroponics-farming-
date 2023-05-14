@@ -11,6 +11,8 @@ class DbService with ReactiveServiceMixin {
 
   DeviceReading? _node;
   DeviceReading? get node => _node;
+  DeviceData2? _node2;
+  DeviceData2? get node2 => _node2;
 
   void setupNodeListening() {
     DatabaseReference starCountRef =
@@ -44,5 +46,17 @@ class DbService with ReactiveServiceMixin {
     DatabaseReference dataRef =
         _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/reading');
     dataRef.update({"condition": condition});
+  }
+
+  void setupNode2Listening() {
+    DatabaseReference starCountRef =
+        _db.ref('/devices/PhHdzpmj4xUZT6wWELcs1FroV513/reading2');
+    starCountRef.onValue.listen((DatabaseEvent event) {
+      if (event.snapshot.exists) {
+        _node2 = DeviceData2.fromMap(event.snapshot.value as Map);
+        // log.v(_node?.lastSeen); //data['time']
+        notifyListeners();
+      }
+    });
   }
 }

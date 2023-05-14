@@ -1,3 +1,8 @@
+//IR module
+#define irPin 2
+bool isIr = false;
+bool currentIrReading = false;
+
 //PH sensor
 #define phPin 33
 int phValue = 0;
@@ -107,7 +112,6 @@ String uid;
 //Databse
 String path;
 
-
 unsigned long printDataPrevMillis = 0;
 
 FirebaseData stream;
@@ -118,7 +122,8 @@ void streamCallback(StreamData data)
   String p = data.dataPath();
 
   Serial.println(p);
-  printResult(data); // see addons/RTDBHelper.h
+  
+  printResult(data);
 
   // Serial.println();
   FirebaseJson jVal = data.jsonObject();
@@ -151,6 +156,7 @@ void streamCallback(StreamData data)
     bool value = stepperFb.to<bool>(); 
     isStepperRotate = value;  
   }
+  
   if (isReadSensorFb.success)
   {
     Serial.println("Success data isReadSensorFb");
@@ -219,10 +225,12 @@ void IRAM_ATTR pulseCounter() {
   pulseCount++;
 }
 
-
 void setup() {
 
   Serial.begin(115200);
+
+  //IR
+  pinMode(irPin, INPUT);
 
   //Temperature
   tempSensor.begin();
@@ -316,7 +324,7 @@ void setup() {
 
   path = "devices/" + uid + "/reading";
 
-//Stream setup
+  //Stream setup
   if (!Firebase.beginStream(stream, "devices/" + uid + "/data"))
     Serial.printf("sream begin error, %s\n\n", stream.errorReason().c_str());
 
@@ -326,6 +334,8 @@ void setup() {
 void loop() {
 
   if(isReadSensor){
+    //Ir
+    readIr();
   
     //PH sensor
     readPH();
@@ -358,10 +368,12 @@ void loop() {
 }
 
 void updateData(){
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > 5000 || sendDataPrevMillis == 0))
+  if (Firebase.ready() && ((currentIrReading != isIr) || millis() - sendDataPrevMillis > 5000 || sendDataPrevMillis == 0))
   {
+    currentIrReading = isIr;
     sendDataPrevMillis = millis();
     FirebaseJson json;
+    json.set("ir", !currentIrReading);
     json.set("ph", phReading);
     json.set("wtr_level", waterLvlValue);
     json.set("temp", temperature);
@@ -405,6 +417,10 @@ void printData(){
     Serial.print("EC:");
     Serial.println(ecValue);
   }
+}
+
+void readIr(){
+  isIr = digitalRead(irPin);
 }
 
 void readPH(){
