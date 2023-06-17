@@ -493,9 +493,12 @@ void stepprRotate(){
 
    if(isStepperRotate)
   {
-    digitalWrite(STEP, HIGH);
-    delayMicroseconds(3000);
-    digitalWrite(STEP, LOW);
-    delayMicroseconds(3000);
+    for(int i = 0; i<200; i++)
+    {
+      digitalWrite(STEP, HIGH);
+      delayMicroseconds(1000);
+      digitalWrite(STEP, LOW);
+      delayMicroseconds(1000);
+    }
   }
 }
